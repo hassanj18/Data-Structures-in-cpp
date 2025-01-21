@@ -1,0 +1,110 @@
+#include<iostream>
+#include<exception>
+#include<queue>
+using namespace std;
+#include<vector>
+#include<list>
+
+class Graph
+{
+public:
+	Graph(int);
+	void DFSVisit(int v,vector<bool>& visited){
+		
+		if (visited[v] == false){
+			visited[v] = true;
+			cout << v << " ";
+			for (list<int>::iterator i = Adj[v].begin(); i != Adj[v].end(); i++)
+			{
+				int u = *i;
+				if (visited[u] == false){
+					DFSVisit(u, visited);
+				}
+			}
+		}
+	}
+	void DFS(int s){
+		vector<bool> Visited(Vertex, false);
+		// Visited[s] = true;
+		DFSVisit(s, Visited);
+		for (int i = 0; i < Vertex; i++)
+		{
+			if (Visited[i] == false)
+				DFSVisit(i, Visited);
+		}
+	}
+	void BFS(int s){
+		queue<int> Q;
+		vector<bool> Visited(Vertex, false);
+		Visited[s] = true;
+		
+		Q.push(s);
+
+		while (!Q.empty()){
+			int v = Q.front();
+			cout << v << " ";
+			Q.pop();
+			for (list<int>::iterator i = Adj[v].begin(); i != Adj[v].end(); i++)
+			{
+				int u = *i;
+				if (Visited[u] == false){
+					Q.push(u);
+					Visited[u] = true;
+				}
+			}
+		}
+	}
+
+	void addEdgeToGraph(int v, int w){
+		if (v >= 0 && v < Vertex){
+			if (w >= 0 && w < Vertex){
+					Adj[v].push_back(w);
+			}
+			else{
+				cout << w << " is not a node in graph ";
+			}
+		}
+		else{
+			cout << v <<" is not a node in graph ";
+
+		}
+	}
+	~Graph();
+
+private:
+	vector<list<int>> Adj;
+	int edges;
+	int Vertex;
+};
+
+Graph::Graph(int v)
+{
+	Adj.resize(v);
+	Vertex = v;
+	edges = 0;
+}
+
+Graph::~Graph()
+{
+}
+
+void main(){
+
+	Graph G(5);
+	G.addEdgeToGraph(1, 2);
+	G.addEdgeToGraph(1, 3);
+	G.addEdgeToGraph(1, 0);
+	G.addEdgeToGraph(2, 3);
+	G.addEdgeToGraph(3, 2);
+	G.addEdgeToGraph(3, 4);
+	G.addEdgeToGraph(0, 1);
+	G.addEdgeToGraph(4, 1);
+	cout << "BFS Search Starting At edge 4: ";
+	G.BFS(4);
+	cout << endl;
+	cout << "DFS Search Starting At edge 4: ";
+	G.DFS(4);
+	cout << endl;
+	system("pause");
+
+}
